@@ -28,7 +28,6 @@ import sys
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
-from bs4 import BeautifulSoup
 from selenium import webdriver
 import time
 
@@ -49,7 +48,6 @@ def get_shuoshuo(src_qq, dest_qq):
     time.sleep(2)
     driver.find_element_by_id('login_div')
     driver.switch_to.frame('login_frame')
-
     driver.find_element_by_id("img_out_" + str(dest_qq)).click()
     time.sleep(5)
     driver.switch_to.frame('app_canvas_frame')
@@ -59,9 +57,11 @@ def get_shuoshuo(src_qq, dest_qq):
         # 以下指的是说说里的数据
         content = driver.find_elements_by_css_selector('.content')
         stime = driver.find_elements_by_css_selector('.c_tx.c_tx3.goDetail')
-        for con, sti in zip(content, stime):
+        likes = driver.find_elements_by_css_selector(".c_tx.comment_btn")
+        for con, sti, like in zip(content, stime, likes):
             data = {
                 u'内容': con.text,
+                u"评论数": like.text,
                 u'时间': sti.text
             }
             with open('haha.json', "a+") as f:
@@ -78,4 +78,4 @@ def get_shuoshuo(src_qq, dest_qq):
 
 
 if __name__ == '__main__':
-    get_shuoshuo('1005370543', "993790934")
+    get_shuoshuo('670076298', "670076298")
